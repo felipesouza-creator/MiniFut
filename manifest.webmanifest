@@ -1,0 +1,17 @@
+{
+  "name": "Laboratório de Leitura de Jogo",
+  "short_name": "Laboratório Futebol",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f7f5",
+  "theme_color": "#0b3d2e",
+  "description": "Laboratório tático com formações visuais em linhas, confiança e navegação por ambientes.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

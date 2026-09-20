@@ -1,0 +1,1500 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b3d2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Laboratório Futebol">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Laboratório de Leitura de Jogo</title>
+<style>
+:root{
+ --bg:#f4f7f5;--card:#fff;--text:#17231d;--muted:#68756f;--line:#dbe5df;
+ --g:#0b6b4b;--gd:#0b3d2e;--gs:#e8f4ef;--gold:#e8ad18;--red:#c94e4e;
+ --blue:#3569bd;--soft:#f8faf9;--shadow:0 8px 24px rgba(20,40,30,.08)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,textarea{font:inherit}button{touch-action:manipulation}
+.app{max-width:820px;margin:auto;padding:14px 10px 44px}.hidden{display:none!important}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.brand small{display:block;color:var(--muted);font-weight:750}.brand h1{font-size:1.18rem;margin:2px 0}
+.top button{min-height:42px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 12px;font-weight:850}
+.hero{background:linear-gradient(135deg,var(--gd),var(--g));color:white;border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:12px}
+.hero small{font-weight:800;opacity:.84}.hero h2{margin:5px 0 8px;font-size:1.38rem}.hero p{margin:0;line-height:1.46}
+.card,.lab,.authbox{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow)}
+.badge{display:inline-block;padding:6px 9px;border-radius:99px;background:var(--gs);color:var(--g);font-size:.72rem;font-weight:900}
+.badge.core{background:#eaf5ef}.badge.transfer{background:#f3f5f4;color:#5f6b65}
+.muted{color:var(--muted);font-size:.84rem;line-height:1.46}
+.label{display:block;margin:10px 0 5px;color:var(--muted);font-size:.82rem;font-weight:800}
+input,textarea{width:100%;min-height:46px;border:1px solid var(--line);border-radius:13px;padding:10px 12px;font-size:16px}
+.btn{min-height:46px;border-radius:13px;font-weight:900}.btn:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.25)}.primary{border:0;background:var(--g);color:#fff}.secondary{border:1px solid var(--line);background:#fff;color:var(--text)}.full{width:100%}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.auth-tabs button{min-height:44px;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:900;color:var(--muted)}.auth-tabs button.active{background:var(--gs);color:var(--g)}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.sum{text-align:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 5px}.sum strong{display:block;font-size:1.18rem}.sum span{font-size:.72rem;color:var(--muted)}
+.activity-tabs,.env-tabs,.task-tabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}.activity-tabs::-webkit-scrollbar,.env-tabs::-webkit-scrollbar,.task-tabs::-webkit-scrollbar{display:none}
+.activity-tab,.env-tab,.task-tab{flex:0 0 auto;min-height:43px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 12px;font-weight:850;color:var(--muted);white-space:nowrap}
+.activity-tab.active,.env-tab.active,.task-tab.active{background:var(--gs);color:var(--g);border-color:#b9d8c8}
+.activity-tab:disabled{opacity:.42}.activity-tab.complete{color:var(--g)}
+.activity-intro{margin-bottom:10px}.activity-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.activity-head h2{margin:5px 0;font-size:1.2rem}.activity-icon{font-size:2rem}
+.activity-progress{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.mini{padding:6px 9px;border:1px solid var(--line);border-radius:999px;font-size:.74rem;font-weight:800;color:var(--muted)}.mini.good{background:var(--gs);color:var(--g)}
+.env-intro{margin-bottom:10px}.task-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.task-top h2{font-size:1.25rem;margin:5px 0 3px}.task-icon{font-size:1.8rem}
+.instruction{padding:12px;border:1px solid var(--line);background:var(--soft);border-radius:13px;margin:12px 0;line-height:1.46}
+.selector{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.player-btn{min-height:46px;border:1px solid var(--line);border-radius:12px;background:#fff;font-weight:900}.player-btn.active{background:var(--gs);outline:2px solid var(--g);outline-offset:1px}
+.pitch-wrap{margin-top:10px;padding:9px;border:1px solid #d2e4d8;background:#edf6ef;border-radius:16px}.pitch{width:100%;height:auto;display:block}
+.help{margin-top:10px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:.84rem;line-height:1.4}
+.arrows{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:9px}.arrows button{min-height:45px;border:1px solid var(--line);border-radius:12px;background:#fff;font-weight:900;font-size:1.05rem}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.feedback{padding:12px;border-radius:13px;margin-top:10px;line-height:1.46;font-size:.87rem}.feedback.good{background:#eaf5ef;border:1px solid #bad9c8}.feedback.try{background:#fff8df;border:1px solid #ecd895}.feedback.err{background:#fff3f3;border:1px solid #dda0a0}
+.after{margin-top:14px;border-top:1px solid var(--line);padding-top:13px}.after h3{margin:0 0 5px;font-size:.95rem}.after p{margin:0;color:var(--muted);font-size:.84rem;line-height:1.48}
+.choice-list{display:grid;gap:8px}.choice{min-height:48px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:800}.choice.selected{background:var(--gs);border-color:#b9d8c8}.choice.correct{background:#eaf5ef;border-color:#93c5aa}.choice.wrong{background:#fff3f3;border-color:#dda0a0}
+.counter{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.countbox{text-align:center;border:1px solid var(--line);border-radius:13px;padding:11px 4px;background:#fbfcfb}.countbox strong{display:block;font-size:1.5rem}.countbox span{font-size:.72rem;color:var(--muted)}
+.checks{display:grid;gap:8px}.checkrow{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfcfb}.checkrow input{width:22px;height:22px;flex:0 0 auto}
+.rule{margin-top:12px;padding:11px;border:1px solid var(--line);border-radius:12px;background:#fbfcfb;color:var(--muted);font-size:.82rem;line-height:1.45}
+.parent-box{margin-top:12px;padding:11px;border:1px dashed #b8c8bf;border-radius:12px;background:#fbfcfb;font-size:.83rem;line-height:1.45}
+.loader{padding:18px;text-align:center;color:var(--muted)}.stagebar{display:flex;gap:6px;margin:10px 0}.stagebar span{height:7px;flex:1;border-radius:99px;background:#dbe5df}.stagebar span.done{background:var(--g)}.stagebar span.current{background:var(--gold)}
+.version{font-size:.7rem;color:var(--muted);margin-top:4px}
+.quick-env-nav{
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  padding:2px 0 7px;margin:-1px 0 4px;
+}
+.quick-env-nav::-webkit-scrollbar{display:none}
+.quick-env-btn{
+  flex:0 0 auto;min-height:38px;padding:0 10px;border:1px solid var(--line);
+  border-radius:11px;background:#fff;color:var(--muted);font-weight:850;font-size:.76rem;
+}
+.quick-env-btn.active{background:var(--gs);border-color:#8ebaa0;color:var(--g)}
+.quick-env-btn.done::before{content:"✓ ";font-weight:900}
+.quick-env-btn.core::after{content:" · núcleo";font-size:.65rem}
+@media(max-width:520px){
+  .quick-env-nav{padding-bottom:5px;margin-bottom:2px}
+  .quick-env-btn{min-height:36px;font-size:.72rem;padding:0 9px}
+}
+
+.analytics-btn{flex:0 0 auto;min-height:38px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 11px;font-weight:900}
+.analytics-overlay{position:fixed;inset:0;z-index:70;background:var(--bg);overflow:auto;padding:12px 10px calc(28px + env(safe-area-inset-bottom))}
+.analytics-shell{max-width:820px;margin:auto}
+.analytics-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:3;background:rgba(244,247,245,.96);backdrop-filter:blur(10px);padding:5px 0 10px}
+.analytics-top h1{font-size:1.15rem;margin:0}.analytics-top p{margin:2px 0 0;color:var(--muted);font-size:.76rem}
+.analytics-close{min-height:40px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 12px;font-weight:900}
+.analytics-note{padding:10px 12px;border:1px solid #ecd895;background:#fff8df;border-radius:13px;font-size:.78rem;line-height:1.4;margin-bottom:10px}
+.analytics-filters{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:9px 0}
+.analytics-filters select{min-height:42px;border:1px solid var(--line);border-radius:11px;background:#fff;padding:0 8px;color:var(--text);font-size:.78rem}
+.analytics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0}
+.analytics-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px}
+.analytics-card strong.big{display:block;font-size:1.3rem}.analytics-card small{color:var(--muted);font-size:.68rem}
+.analytics-section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;margin-top:9px}
+.analytics-section h2{font-size:.95rem;margin:0 0 10px}
+.confidence-box{margin:10px 0 0;padding:10px;border:1px solid var(--line);border-radius:13px;background:#f8faf9}
+.confidence-title{font-size:.78rem;font-weight:900;margin-bottom:7px}
+.confidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.confidence-btn{min-height:42px;border:1px solid var(--line);border-radius:11px;background:#fff;font-weight:850;font-size:.73rem;color:var(--text);padding:7px}
+.confidence-btn.active{border-color:#0b6b4b;background:#edf6ef;color:#0b6b4b}
+.confidence-btn:disabled{opacity:.78}
+.confidence-bars{display:grid;gap:8px}
+.confidence-row{display:grid;grid-template-columns:115px 1fr 32px;gap:8px;align-items:center;font-size:.76rem}
+.confidence-track{height:10px;background:#edf1ef;border-radius:999px;overflow:hidden}
+.confidence-fill{height:100%;background:#0b6b4b;border-radius:999px}
+.confidence-note{font-size:.72rem;color:var(--muted);line-height:1.4;margin-top:8px}
+@media(max-width:520px){
+ .confidence-grid{grid-template-columns:1fr}
+ .confidence-btn{min-height:40px;text-align:left;padding-left:12px}
+ .confidence-row{grid-template-columns:105px 1fr 28px}
+}
+
+.activity-row{display:grid;grid-template-columns:42px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #eef2ef}
+.activity-row:last-child{border-bottom:0}.act-num{font-size:.73rem;font-weight:900;color:var(--g)}
+.act-title{font-size:.78rem;font-weight:800}.act-sub{font-size:.67rem;color:var(--muted);margin-top:2px}
+.progress-track{height:7px;background:#e8eeea;border-radius:99px;overflow:hidden;margin-top:6px}.progress-fill{height:100%;background:var(--g);border-radius:99px}
+.env-bar{display:grid;grid-template-columns:110px 1fr 36px;gap:8px;align-items:center;margin:8px 0}.env-label{font-size:.74rem;font-weight:800}.env-value{font-size:.7rem;color:var(--muted);text-align:right}
+.bar-track{height:9px;background:#e9eeeb;border-radius:99px;overflow:hidden}.bar-fill{height:100%;background:var(--g);border-radius:99px}
+.trend-wrap{overflow-x:auto}.trend-svg{width:100%;min-width:320px;height:150px;display:block}
+.history-list{display:grid;gap:7px}.history-item{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#fbfcfb}
+.history-head{display:flex;justify-content:space-between;gap:8px}.history-title{font-size:.78rem;font-weight:850}.history-date{font-size:.66rem;color:var(--muted);white-space:nowrap}
+.history-meta{font-size:.68rem;color:var(--muted);margin-top:3px}.history-result{display:inline-block;margin-top:6px;padding:4px 7px;border-radius:99px;background:var(--gs);color:var(--g);font-size:.68rem;font-weight:850}
+.empty-state{text-align:center;padding:18px;color:var(--muted);font-size:.8rem}
+@media(max-width:520px){
+ .brand small{font-size:.66rem}
+
+ .analytics-filters{grid-template-columns:1fr}
+ .analytics-grid{grid-template-columns:repeat(3,1fr)}
+ .analytics-card{padding:8px 6px;text-align:center}
+ .analytics-card strong.big{font-size:1.05rem}
+ .analytics-card small{font-size:.61rem}
+ .env-bar{grid-template-columns:92px 1fr 32px}
+}
+
+.navbar-compact{
+  position:sticky;top:0;z-index:25;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:6px 0;background:rgba(244,247,245,.96);backdrop-filter:blur(10px);
+}
+.current-path{min-width:0;flex:1}
+.current-path small{display:block;color:var(--muted);font-size:.68rem;font-weight:800}
+.current-path strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.88rem}
+.menu-btn{flex:0 0 auto;min-height:38px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 13px;font-weight:900}
+.menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.36);z-index:49}
+.menu-sheet{
+  position:fixed;z-index:50;left:0;right:0;bottom:0;max-height:86vh;overflow:auto;
+  background:var(--bg);border-radius:22px 22px 0 0;padding:14px 12px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -14px 38px rgba(0,0,0,.18)
+}
+.menu-handle{width:44px;height:5px;border-radius:99px;background:#c7d1cb;margin:0 auto 12px}
+.menu-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.menu-head h2{font-size:1.05rem;margin:0}.menu-close{width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:1.15rem}
+.menu-section{margin-top:15px}.menu-section-title{font-size:.73rem;color:var(--muted);font-weight:900;margin:0 0 7px;text-transform:uppercase;letter-spacing:.04em}
+.menu-list{display:grid;gap:7px}
+.menu-item{
+  width:100%;min-height:50px;text-align:left;padding:9px 11px;background:#fff;
+  border:1px solid var(--line);border-radius:13px;color:var(--text)
+}
+.menu-item.active{border-color:#8ebaa0;background:var(--gs)}
+.menu-item:disabled{opacity:.42}
+.menu-item strong{display:block;font-size:.86rem}
+.menu-item span{display:block;color:var(--muted);font-size:.73rem;margin-top:2px}
+.menu-env-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.menu-env{min-height:52px;border:1px solid var(--line);background:#fff;border-radius:13px;font-weight:850}
+.menu-env.active{background:var(--gs);border-color:#8ebaa0;color:var(--g)}
+.compact-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+.compact-meta span{font-size:.68rem;font-weight:800;color:var(--muted);padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:#fff}
+.compact-task-head{margin-bottom:5px}
+.compact-task-head h2{font-size:1.08rem;margin:3px 0}.compact-task-head p{margin:0}
+.mobile-hide-when-focus{}
+@media(max-width:520px){
+  .top{display:none}
+  .hero{padding:10px 12px;margin-bottom:6px;border-radius:14px}
+  .hero h2{font-size:1rem;margin:1px 0 3px}.hero p{font-size:.73rem;line-height:1.3}
+  .summary{margin:6px 0}.sum{padding:6px 3px}.sum strong{font-size:.95rem}.sum span{font-size:.61rem}
+  #activityTabs,#activityIntro,#envTabs,#envIntro{display:none!important}
+  .lab{padding:8px;border-radius:15px}
+  .task-top{display:none}
+  .instruction{margin:8px 0;padding:10px;font-size:.84rem}
+  .pitch-wrap{margin-top:7px;padding:6px}
+  .help{margin-top:7px;padding:8px 10px;font-size:.76rem}
+  .arrows{margin-top:7px}.arrows button{min-height:41px}
+  .actions{margin-top:8px}
+  .rule{margin-top:8px;padding:8px;font-size:.72rem}
+  .selector{gap:6px}.player-btn{min-height:42px}
+  .after{margin-top:9px;padding-top:9px}
+}
+
+.next-panel{margin-top:8px;padding:14px;border:1px solid #bad9c8;border-radius:15px;background:#f1f8f4}
+.next-panel h3{margin:0 0 5px;font-size:1rem}.next-panel p{margin:0;color:var(--muted);font-size:.84rem;line-height:1.45}
+.next-grid{display:grid;gap:8px;margin-top:12px}
+.next-choice{width:100%;min-height:50px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:#fff;font-weight:850;color:var(--text)}
+.next-choice strong{display:block}.next-choice span{display:block;margin-top:2px;color:var(--muted);font-size:.75rem;font-weight:650}
+.next-choice.primary-choice{background:var(--g);border-color:var(--g);color:#fff}
+.next-choice.primary-choice span{color:rgba(255,255,255,.82)}
+
+@media(max-width:520px){.selector{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.hero,.card,.lab,.authbox{border-radius:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+ <div class="top">
+   <div class="brand"><small>Laboratório · build de desenvolvimento</small><h1>⚽ Laboratório de Leitura de Jogo</h1></div>
+   <button id="logoutBtn" class="hidden">Sair</button>
+ </div>
+
+ <section id="authView">
+   <div class="hero"><small>PAI + FILHO</small><h2>Um conceito, vários ambientes.</h2><p>Cada atividade ensina um princípio. Quadro Tático, Decisões, Xbox e Campo Real são formas diferentes de praticar o mesmo conceito.</p></div>
+   <div class="auth-tabs"><button id="parentTab" class="active">👨‍👦 Pai</button><button id="childTab">🧒 Jogador</button></div>
+   <div id="parentAuth" class="authbox">
+     <span class="label">E-mail</span><input id="email" type="email">
+     <span class="label">Senha</span><input id="password" type="password">
+     <button id="signInBtn" class="btn primary full" style="margin-top:9px">Entrar</button>
+     <div id="parentMsg" class="feedback err hidden"></div>
+   </div>
+   <div id="childAuth" class="authbox hidden">
+     <p class="muted">Abra o convite do jogador ou cole o token.</p>
+     <span class="label">Token</span><input id="inviteToken">
+     <button id="pairBtn" class="btn primary full" style="margin-top:9px">Entrar</button>
+     <div id="childMsg" class="feedback err hidden"></div>
+   </div>
+ </section>
+
+ <section id="hubView" class="hidden">
+   <div class="navbar-compact">
+     <div class="current-path">
+       <small id="pathActivity">Atividade</small>
+       <strong id="pathEnvironment">Ambiente</strong>
+     </div>
+     <div style="display:flex;gap:6px">
+       <button id="parentAnalyticsBtn" class="analytics-btn hidden" type="button">📊 Evolução</button>
+       <button id="openMenuBtn" class="menu-btn" type="button">☰ Menu</button>
+     </div>
+   </div>
+   <div id="quickEnvNav" class="quick-env-nav"></div>
+   <div class="hero"><small id="roleLabel"></small><h2 id="welcome"></h2><p id="roleHelp"></p></div>
+
+   <div class="summary">
+     <div class="sum"><strong id="doneStat">0/10</strong><span>atividades concluídas</span></div>
+     <div class="sum"><strong id="attemptStat">0</strong><span>tentativas</span></div>
+     <div class="sum"><strong id="catalogStat">1/10</strong><span>atividade atual</span></div>
+   </div>
+
+   <div id="activityTabs" class="activity-tabs"></div>
+   <div id="activityIntro" class="card activity-intro"></div>
+
+   <div id="envTabs" class="env-tabs"></div>
+   <div id="envIntro" class="card env-intro"></div>
+
+   <section id="taskLab" class="lab">
+     <div id="catalogLoader" class="loader">Carregando trilha…</div>
+     <div id="taskArea" class="hidden">
+       <div id="compactTaskHead" class="compact-task-head">
+         <div class="compact-meta"><span id="compactType"></span><span id="compactVersion"></span></div>
+         <h2 id="compactTitle"></h2>
+         <p id="compactGoal" class="muted"></p>
+       </div>
+       <div id="taskTabs" class="task-tabs hidden"></div>
+       <div class="task-top">
+         <div><span id="taskType" class="badge"></span><h2 id="taskTitle"></h2><p id="taskGoal" class="muted"></p><div id="taskVersion" class="version"></div></div>
+         <div id="taskIcon" class="task-icon"></div>
+       </div>
+       <div id="taskBody"></div>
+       <div class="rule"><strong>Regra:</strong> primeiro resolva. O gabarito aparece somente depois da tentativa. Os ambientes complementares não substituem o núcleo da atividade.</div>
+     </div>
+   </section>
+ </section>
+
+ <div id="menuBackdrop" class="menu-backdrop hidden"></div>
+ <aside id="menuSheet" class="menu-sheet hidden" aria-modal="true" role="dialog">
+   <div class="menu-handle"></div>
+   <div class="menu-head"><h2>Navegação do treino</h2><button id="closeMenuBtn" class="menu-close" type="button">✕</button></div>
+   <div class="menu-section">
+     <div class="menu-section-title">Atividade</div>
+     <div id="menuActivities" class="menu-list"></div>
+   </div>
+   <div class="menu-section">
+     <div class="menu-section-title">Ambiente de estudo</div>
+     <div id="menuEnvironments" class="menu-env-grid"></div>
+   </div>
+   <div class="menu-section">
+     <div class="menu-section-title">Tarefa</div>
+     <div id="menuTasks" class="menu-list"></div>
+   </div>
+ </aside>
+
+ <section id="parentAnalytics" class="analytics-overlay hidden">
+   <div class="analytics-shell">
+     <div class="analytics-top">
+       <div><h1>📊 Evolução do jogador</h1><p id="analyticsSubtitle">Histórico e progresso</p></div>
+       <button id="closeAnalyticsBtn" class="analytics-close" type="button">Fechar</button>
+     </div>
+
+     <div id="historyStartNote" class="analytics-note">
+       O progresso anterior foi preservado no consolidado. O histórico detalhado de cada tentativa começa na LAB R03.
+     </div>
+
+     <div class="analytics-filters">
+       <select id="analyticsActivityFilter"><option value="all">Todas as atividades</option></select>
+       <select id="analyticsEnvironmentFilter">
+         <option value="all">Todos os ambientes</option>
+         <option value="quadro_tatico">Quadro Tático</option>
+         <option value="observacao">Decisões</option>
+         <option value="xbox">Xbox</option>
+         <option value="campo">Campo Real</option>
+       </select>
+       <select id="analyticsPeriodFilter">
+         <option value="all">Todo o histórico</option>
+         <option value="7">Últimos 7 dias</option>
+         <option value="30">Últimos 30 dias</option>
+       </select>
+     </div>
+
+     <div class="analytics-grid">
+       <div class="analytics-card"><strong id="analyticsDone" class="big">0/10</strong><small>atividades concluídas</small></div>
+       <div class="analytics-card"><strong id="analyticsAttempts" class="big">0</strong><small>tentativas totais</small></div>
+       <div class="analytics-card"><strong id="analyticsAvg" class="big">—</strong><small>média detalhada*</small></div>
+     </div>
+     <div class="analytics-note" id="historyCoverageNote" style="background:#f8faf9;border-color:var(--line)">
+       Histórico detalhado: 0 registros desde a ativação desta camada.
+     </div>
+
+     <div class="analytics-section">
+       <h2>Progresso por atividade</h2>
+       <div id="activityProgressList"></div>
+     </div>
+
+     <div class="analytics-section">
+       <h2>Práticas por ambiente</h2>
+       <div id="environmentBars"></div>
+     </div>
+
+     <div class="analytics-section">
+       <h2>Evolução da acurácia</h2>
+       <p class="muted" style="margin:-4px 0 8px">Somente exercícios com resultado percentual comparável: quadro tático e decisões.</p>
+       <div id="accuracyTrend" class="trend-wrap"></div>
+     </div>
+
+     <div class="analytics-section">
+       <h2>Confiança declarada nas decisões</h2>
+       <p class="muted" style="margin:-4px 0 8px">Não é nota. Mostra como o jogador se sentia antes de responder.</p>
+       <div id="confidenceAnalytics"></div>
+     </div>
+
+     <div class="analytics-section">
+       <h2>Histórico recente</h2>
+       <div id="historyList" class="history-list"></div>
+     </div>
+   </div>
+ </section>
+
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
+<script>
+const cfg=window.HUB_CONFIG||{};
+const sb=supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);
+const $=id=>document.getElementById(id);
+const CACHE_TASKS="lab_r02_tasks_v1";
+const CACHE_ACTIVITIES="lab_r02_activities_v1";
+
+let session=null,role=null,family=null,player=null,attempts=[],catalog=[],activities=[],attemptHistory=[];
+let currentActivity=1,currentEnv=null,taskIndex=0,taskState={};
+
+const envMeta={
+ quadro_tatico:{title:"🧩 Quadro Tático",short:"Quadro Tático",desc:"Manipule jogadores e compare relações de espaço com uma referência visual."},
+ observacao:{title:"🧠 Decisões",short:"Decisões",desc:"Leia situações e escolha uma ação antes de ver a explicação."},
+ xbox:{title:"🎮 Xbox",short:"Xbox",desc:"Use a partida como laboratório e registre comportamentos do jogo."},
+ campo:{title:"⚽ Campo Real",short:"Campo Real",desc:"Leve o princípio para o treino e registre evidências depois."}
+};
+const envOrder=["quadro_tatico","observacao","xbox","campo"];
+
+function show(id){$(id).classList.remove("hidden")}
+function hide(id){$(id).classList.add("hidden")}
+function msg(id,t){$(id).textContent=t;show(id)}
+function openMenu(){
+ renderMenu();
+ show("menuBackdrop");show("menuSheet");
+ document.body.style.overflow="hidden";
+}
+function closeMenu(){
+ hide("menuBackdrop");hide("menuSheet");
+ document.body.style.overflow="";
+}
+function renderMenu(){
+ if(!activities.length)return;
+ const ab=$("menuActivities"),eb=$("menuEnvironments"),tb=$("menuTasks");
+ ab.innerHTML="";
+ activities.forEach(a=>{
+   const n=Number(a.activity_number),done=isActivityComplete(n),unlocked=isActivityUnlocked(n);
+   const b=document.createElement("button");b.type="button";b.className="menu-item"+(n===currentActivity?" active":"");b.disabled=!unlocked;
+   b.innerHTML=`<strong>${done?"✓ ":unlocked?"":"🔒 "}${String(n).padStart(2,"0")} · ${a.title}</strong><span>${done?"Núcleo concluído":unlocked?"Disponível":"Bloqueada até concluir a anterior"}</span>`;
+   b.onclick=()=>{currentActivity=n;currentEnv=null;taskIndex=0;renderAll();renderMenu()};
+   ab.appendChild(b);
+ });
+ eb.innerHTML="";
+ activityEnvironments().forEach(env=>{
+   const tasks=activityTasks().filter(t=>t.environment===env),done=tasks.length&&tasks.every(taskDone),core=tasks.some(t=>t.required_for_progress);
+   const b=document.createElement("button");b.type="button";b.className="menu-env"+(env===currentEnv?" active":"");
+   b.textContent=`${done?"✓ ":""}${envMeta[env].title}${core?" · núcleo":""}`;
+   b.onclick=()=>{currentEnv=env;taskIndex=0;renderEnvironmentTabs();renderEnvironment();renderMenu()};
+   eb.appendChild(b);
+ });
+ tb.innerHTML="";
+ envTasks().forEach((t,i)=>{
+   const b=document.createElement("button");b.type="button";b.className="menu-item"+(i===taskIndex?" active":"");
+   b.innerHTML=`<strong>${taskDone(t)?"✓ ":""}${t.title}</strong><span>${t.required_for_progress?"Núcleo para avanço":"Prática complementar"}</span>`;
+   b.onclick=()=>{taskIndex=i;renderTaskTabs();renderTask();closeMenu();scrollToBoard()};
+   tb.appendChild(b);
+ });
+}
+function updatePath(){
+ const a=currentActivityInfo(),t=currentTask(),meta=currentEnv?envMeta[currentEnv]:null;
+ if($("pathActivity"))$("pathActivity").textContent=a?`ATIVIDADE ${String(currentActivity).padStart(2,"0")} · ${a.short_title}`:"Atividade";
+ if($("pathEnvironment"))$("pathEnvironment").textContent=meta?`${meta.title}${t?.required_for_progress?" · núcleo":""}`:"Ambiente";
+}
+function scrollToBoard(){
+ const pitch=$("pitch");
+ const target=pitch?.closest(".pitch-wrap") || $("taskLab");
+ setTimeout(()=>target?.scrollIntoView({behavior:"smooth",block:"start"}),30);
+}
+function focusResult(){
+ requestAnimationFrame(()=>{
+   requestAnimationFrame(()=>{
+     const target=$("feedback") || $("after");
+     if(target && target.innerHTML.trim()) target.scrollIntoView({behavior:"smooth",block:"center"});
+   });
+ });
+}
+
+
+async function loadAttemptHistory(){
+ if(!player)return;
+ const {data,error}=await sb.from("task_attempt_history")
+   .select("id,player_id,task_id,activity_number,environment,task_type,result_kind,score,passed,answer,task_revision,attempted_at")
+   .eq("player_id",player.id)
+   .order("attempted_at",{ascending:false})
+   .limit(500);
+ if(error){console.error(error);attemptHistory=[];return}
+ attemptHistory=data||[];
+}
+
+async function showParentAnalytics(){
+ if(role!=="parent")return;
+ closeMenu();
+ show("parentAnalytics");
+ document.body.style.overflow="hidden";
+ $("analyticsSubtitle").textContent=player?`Resultados de ${player.display_name}`:"Histórico e progresso";
+ await loadAttemptHistory();
+ populateAnalyticsFilters();
+ renderParentAnalytics();
+}
+function hideParentAnalytics(){
+ hide("parentAnalytics");
+ document.body.style.overflow="";
+}
+function populateAnalyticsFilters(){
+ const sel=$("analyticsActivityFilter"),old=sel.value;
+ sel.innerHTML='<option value="all">Todas as atividades</option>';
+ activities.forEach(a=>{
+   const o=document.createElement("option");o.value=String(a.activity_number);
+   o.textContent=`${String(a.activity_number).padStart(2,"0")} · ${a.short_title}`;
+   sel.appendChild(o);
+ });
+ if([...sel.options].some(o=>o.value===old))sel.value=old;
+}
+function filteredHistory(){
+ let rows=[...attemptHistory];
+ const av=$("analyticsActivityFilter").value,ev=$("analyticsEnvironmentFilter").value,pv=$("analyticsPeriodFilter").value;
+ if(av!=="all")rows=rows.filter(r=>Number(r.activity_number)===Number(av));
+ if(ev!=="all")rows=rows.filter(r=>r.environment===ev);
+ if(pv!=="all"){
+   const cutoff=Date.now()-Number(pv)*86400000;
+   rows=rows.filter(r=>new Date(r.attempted_at).getTime()>=cutoff);
+ }
+ return rows;
+}
+function pct(n,d){return d?Math.round(100*n/d):0}
+
+function confidenceLabel(v){
+ return ({
+   certeza:"Tenho certeza",
+   acho:"Acho que sim",
+   nao_sei:"Ainda não sei"
+ })[v]||"";
+}
+function confidenceShort(v){
+ return ({
+   certeza:"certeza",
+   acho:"acho que sim",
+   nao_sei:"não sei"
+ })[v]||"";
+}
+function confidenceEntriesFromHistory(rows){
+ const out=[];
+ rows.forEach(r=>{
+   const a=r.answer||{};
+   if(a.confidence) out.push({confidence:a.confidence,correct:Number(r.score)===100,activity:r.activity_number,attempted_at:r.attempted_at});
+   if(Array.isArray(a.answers)){
+     a.answers.forEach(x=>{
+       if(x?.confidence) out.push({confidence:x.confidence,correct:!!x.correct,activity:r.activity_number,attempted_at:r.attempted_at});
+     });
+   }
+ });
+ return out;
+}
+function renderConfidenceAnalytics(rows){
+ const box=$("confidenceAnalytics");
+ if(!box)return;
+ const entries=confidenceEntriesFromHistory(rows);
+ if(!entries.length){
+   box.innerHTML='<div class="empty-state">As novas respostas de decisão começarão a registrar confiança a partir desta revisão.</div>';
+   return;
+ }
+ const order=["certeza","acho","nao_sei"];
+ const counts=Object.fromEntries(order.map(k=>[k,entries.filter(e=>e.confidence===k).length]));
+ const max=Math.max(1,...Object.values(counts));
+ box.innerHTML=`<div class="confidence-bars">${order.map(k=>`
+   <div class="confidence-row">
+     <div>${confidenceLabel(k)}</div>
+     <div class="confidence-track"><div class="confidence-fill" style="width:${Math.round(100*counts[k]/max)}%"></div></div>
+     <strong>${counts[k]}</strong>
+   </div>`).join("")}</div>
+   <div class="confidence-note">Use isto para conversar: “o que te deixou em dúvida?” ou “o que você viu para ter certeza?”. Confiança não entra na pontuação.</div>`;
+}
+function confidenceSummary(answer){
+ if(!answer)return"";
+ if(answer.confidence)return confidenceShort(answer.confidence);
+ if(Array.isArray(answer.answers)){
+   const vals=answer.answers.map(x=>x?.confidence).filter(Boolean);
+   if(!vals.length)return"";
+   const c={certeza:0,acho:0,nao_sei:0};vals.forEach(v=>{if(v in c)c[v]++});
+   return `confiança: ${c.certeza} certeza · ${c.acho} acho · ${c.nao_sei} não sei`;
+ }
+ return"";
+}
+
+function renderParentAnalytics(){
+ const rows=filteredHistory();
+ const done=activities.filter(a=>isActivityComplete(a.activity_number)).length;
+ const totalAttempts=attempts.reduce((sum,a)=>sum+(a.attempts_count||0),0);
+ const accuracyRows=rows.filter(r=>r.result_kind==="accuracy"&&Number.isFinite(Number(r.score)));
+ const avg=accuracyRows.length?Math.round(accuracyRows.reduce((s,r)=>s+Number(r.score),0)/accuracyRows.length):null;
+ $("analyticsDone").textContent=`${done}/${activities.length}`;
+ $("analyticsAttempts").textContent=totalAttempts;
+ $("analyticsAvg").textContent=avg===null?"—":`${avg}%`;
+ $("historyCoverageNote").textContent=`Histórico detalhado: ${rows.length} registro${rows.length===1?"":"s"} no filtro atual. O total de tentativas acima inclui também o progresso consolidado anterior.`;
+ renderActivityProgressAnalytics(rows);
+ renderEnvironmentAnalytics(rows);
+ renderAccuracyTrend(accuracyRows);
+ renderConfidenceAnalytics(rows);
+ renderHistoryList(rows);
+}
+function renderActivityProgressAnalytics(rows){
+ const box=$("activityProgressList");box.innerHTML="";
+ activities.forEach(a=>{
+   const n=Number(a.activity_number),tasks=activityTasks(n),doneTasks=tasks.filter(taskDone).length,complete=isActivityComplete(n);
+   const histCount=rows.filter(r=>Number(r.activity_number)===n).length;
+   const row=document.createElement("div");row.className="activity-row";
+   row.innerHTML=`<div class="act-num">${String(n).padStart(2,"0")}</div>
+     <div><div class="act-title">${a.title}</div>
+       <div class="act-sub">${doneTasks}/${tasks.length} práticas concluídas · ${histCount} tentativa${histCount===1?"":"s"} no filtro</div>
+       <div class="progress-track"><div class="progress-fill" style="width:${pct(doneTasks,tasks.length)}%"></div></div>
+     </div>
+     <div class="history-result">${complete?"✓ núcleo":"em curso"}</div>`;
+   box.appendChild(row);
+ });
+}
+function renderEnvironmentAnalytics(rows){
+ const box=$("environmentBars");box.innerHTML="";
+ const total=Math.max(1,rows.length);
+ envOrder.forEach(env=>{
+   const n=rows.filter(r=>r.environment===env).length;
+   const div=document.createElement("div");div.className="env-bar";
+   div.innerHTML=`<div class="env-label">${envMeta[env].title}</div>
+     <div class="bar-track"><div class="bar-fill" style="width:${pct(n,total)}%"></div></div>
+     <div class="env-value">${n}</div>`;
+   box.appendChild(div);
+ });
+}
+function renderAccuracyTrend(rows){
+ const box=$("accuracyTrend");
+ const data=[...rows].sort((a,b)=>new Date(a.attempted_at)-new Date(b.attempted_at)).slice(-20);
+ if(!data.length){box.innerHTML='<div class="empty-state">Ainda não há tentativas detalhadas de acurácia nesta versão.</div>';return}
+ const W=520,H=150,padL=34,padR=12,padT=12,padB=24;
+ const x=i=>data.length===1?(W/2):padL+i*((W-padL-padR)/(data.length-1));
+ const y=v=>padT+(100-v)*(H-padT-padB)/100;
+ const pts=data.map((r,i)=>`${x(i)},${y(Number(r.score))}`).join(" ");
+ const circles=data.map((r,i)=>`<circle cx="${x(i)}" cy="${y(Number(r.score))}" r="4" fill="currentColor"><title>${Number(r.score)}% · Atividade ${r.activity_number}</title></circle>`).join("");
+ const guides=[0,50,70,100].map(v=>`<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="#dbe5df" stroke-width="1"/><text x="2" y="${y(v)+4}" font-size="10" fill="#68756f">${v}%</text>`).join("");
+ box.innerHTML=`<svg class="trend-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolução da acurácia">${guides}<polyline points="${pts}" fill="none" stroke="#0b6b4b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${circles}<text x="${padL}" y="${H-4}" font-size="10" fill="#68756f">mais antigo</text><text x="${W-padR}" y="${H-4}" text-anchor="end" font-size="10" fill="#68756f">mais recente</text></svg>`;
+}
+function renderHistoryList(rows){
+ const box=$("historyList");box.innerHTML="";
+ if(!rows.length){box.innerHTML='<div class="empty-state">Nenhuma tentativa detalhada encontrada para este filtro.</div>';return}
+ rows.slice(0,30).forEach(r=>{
+   const t=catalog.find(x=>x.task_id===r.task_id),meta=envMeta[r.environment];
+   const dt=new Date(r.attempted_at).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+   let result;
+   if(r.result_kind==="accuracy") result=`${r.score}% ${r.passed?"· aprovado":"· abaixo do mínimo"}`;
+   else if(r.result_kind==="checklist") result=r.passed?"Reflexão concluída":"Reflexão parcial";
+   else if(r.result_kind==="observation") result=r.passed?"Missão registrada":"Registro parcial";
+   else result=r.passed?"Concluído":"Em andamento";
+   const conf=confidenceSummary(r.answer);
+   const div=document.createElement("div");div.className="history-item";
+   div.innerHTML=`<div class="history-head"><div class="history-title">Ativ. ${String(r.activity_number).padStart(2,"0")} · ${t?.title||r.task_id}</div><div class="history-date">${dt}</div></div><div class="history-meta">${meta?.title||r.environment} · R${r.task_revision}${conf?` · ${conf}`:""}</div><span class="history-result">${result}</span>`;
+   box.appendChild(div);
+ });
+}
+
+function setAuthMode(m){
+ $("parentTab").classList.toggle("active",m==="parent");
+ $("childTab").classList.toggle("active",m==="child");
+ $("parentAuth").classList.toggle("hidden",m!=="parent");
+ $("childAuth").classList.toggle("hidden",m!=="child");
+}
+$("parentTab").onclick=()=>setAuthMode("parent");
+$("childTab").onclick=()=>setAuthMode("child");
+$("openMenuBtn").onclick=openMenu;
+$("closeMenuBtn").onclick=closeMenu;
+$("menuBackdrop").onclick=closeMenu;
+$("parentAnalyticsBtn").onclick=showParentAnalytics;
+$("closeAnalyticsBtn").onclick=hideParentAnalytics;
+$("analyticsActivityFilter").onchange=renderParentAnalytics;
+$("analyticsEnvironmentFilter").onchange=renderParentAnalytics;
+$("analyticsPeriodFilter").onchange=renderParentAnalytics;
+
+
+
+$("signInBtn").onclick=async()=>{
+ const {data,error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+ if(error)return msg("parentMsg",error.message);
+ session=data.session;await loadHub();
+};
+$("pairBtn").onclick=async()=>{
+ const token=$("inviteToken").value.trim()||new URLSearchParams(location.search).get("invite")||"";
+ const {data:a,error:ae}=await sb.auth.signInAnonymously();
+ if(ae)return msg("childMsg",ae.message);
+ const {error}=await sb.functions.invoke("pair-player",{body:{token}});
+ if(error)return msg("childMsg","Convite inválido ou expirado.");
+ session=a.session;history.replaceState({},document.title,location.pathname);await loadHub();
+};
+$("logoutBtn").onclick=async()=>{await sb.auth.signOut();location.href=location.pathname};
+
+async function loadHub(){
+ const {data:{session:s}}=await sb.auth.getSession();session=s;
+ if(!s){show("authView");hide("hubView");hide("logoutBtn");return}
+ hide("authView");show("hubView");show("logoutBtn");
+
+ const uid=s.user.id;
+ const {data:mem}=await sb.from("family_members").select("role,family_id,player_id,families(id,name),players(id,display_name)").eq("user_id",uid);
+ const m=mem&&mem[0];
+ if(m){role=m.role;family=m.families||null;player=m.players||null}
+ else{
+   const {data:owned}=await sb.from("families").select("*").eq("owner_user_id",uid).limit(1);
+   if(owned&&owned[0]){
+     role="parent";family=owned[0];
+     const {data:ps}=await sb.from("players").select("*").eq("family_id",family.id).order("created_at").limit(1);
+     if(ps&&ps[0])player=ps[0];
+   }
+ }
+ if(!player){$("welcome").textContent="Nenhum jogador encontrado";$("roleHelp").textContent="É necessário existir um perfil de jogador vinculado.";return}
+
+ $("roleLabel").textContent=role==="parent"?"MODO PAI":"MODO JOGADOR";
+ if(role==="child"){hide("logoutBtn");hide("parentAnalyticsBtn")}else{show("logoutBtn");show("parentAnalyticsBtn")}
+ $("welcome").textContent=role==="parent"?`Acompanhando ${player.display_name}`:`Olá, ${player.display_name}!`;
+ $("roleHelp").textContent=role==="parent"
+   ?"A atividade é o conceito. Os ambientes são formas diferentes de observar, decidir e aplicar esse conceito."
+   :"Complete o núcleo para liberar a próxima atividade. Use os outros ambientes para treinar o mesmo princípio de outras formas.";
+
+ await Promise.all([refreshAttempts(),loadContent()]);
+ chooseInitialActivity();
+ renderAll();
+}
+
+async function refreshAttempts(){
+ const {data}=await sb.from("task_attempts").select("*").eq("player_id",player.id);
+ attempts=data||[];
+}
+
+async function loadContent(){
+ const [ar,tr]=await Promise.all([
+   sb.from("activity_catalog").select("activity_number,title,short_title,goal,icon,sort_order").order("sort_order"),
+   sb.from("task_catalog").select("task_id,activity_number,required_for_progress,environment_order,environment,task_type,label,title,goal,instruction,explanation,icon,difficulty,sort_order,config,revision,updated_at").order("activity_number").order("environment_order").order("sort_order")
+ ]);
+ if(!ar.error && ar.data?.length){
+   activities=ar.data;
+   try{localStorage.setItem(CACHE_ACTIVITIES,JSON.stringify(activities))}catch(e){}
+ }else{
+   try{activities=JSON.parse(localStorage.getItem(CACHE_ACTIVITIES)||"[]")}catch(e){activities=[]}
+ }
+ if(!tr.error && tr.data?.length){
+   catalog=tr.data.filter(t=>Number(t.activity_number)>=1);
+   try{localStorage.setItem(CACHE_TASKS,JSON.stringify(catalog))}catch(e){}
+ }else{
+   try{catalog=JSON.parse(localStorage.getItem(CACHE_TASKS)||"[]")}catch(e){catalog=[]}
+ }
+ if(!activities.length||!catalog.length){
+   $("catalogLoader").textContent="Não foi possível carregar a trilha de atividades.";
+   return;
+ }
+ hide("catalogLoader");show("taskArea");
+}
+
+function attemptFor(id){return attempts.find(a=>a.task_id===id)||{attempts_count:0,best_score:0,completed:false,last_answer:{}}}
+function taskDone(t){return !!attemptFor(t.task_id).completed}
+function activityTasks(n=currentActivity){return catalog.filter(t=>Number(t.activity_number)===Number(n))}
+function requiredTasks(n=currentActivity){return activityTasks(n).filter(t=>t.required_for_progress)}
+function isActivityComplete(n){const r=requiredTasks(n);return r.length>0&&r.every(taskDone)}
+function isActivityUnlocked(n){
+ if(Number(n)===1)return true;
+ for(let i=1;i<Number(n);i++){if(!isActivityComplete(i))return false}
+ return true;
+}
+function chooseInitialActivity(){
+ const first=activities.find(a=>isActivityUnlocked(a.activity_number)&&!isActivityComplete(a.activity_number));
+ currentActivity=Number(first?.activity_number || activities[activities.length-1]?.activity_number || 1);
+ currentEnv=null;taskIndex=0;
+}
+function activityEnvironments(){
+ const present=new Set(activityTasks().map(t=>t.environment));
+ return envOrder.filter(e=>present.has(e));
+}
+function envTasks(){return activityTasks().filter(t=>t.environment===currentEnv).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0))}
+function currentTask(){return envTasks()[taskIndex]}
+function currentActivityInfo(){return activities.find(a=>Number(a.activity_number)===Number(currentActivity))}
+
+function renderAll(){
+ if(!activities.length||!catalog.length)return;
+ if(!isActivityUnlocked(currentActivity)){
+   const unlocked=activities.filter(a=>isActivityUnlocked(a.activity_number));
+   currentActivity=Number(unlocked[unlocked.length-1]?.activity_number||1);
+ }
+ const envs=activityEnvironments();
+ if(!currentEnv||!envs.includes(currentEnv))currentEnv=envs[0]||null;
+ taskIndex=Math.min(taskIndex,Math.max(0,envTasks().length-1));
+ updateStats();renderActivityTabs();renderActivityIntro();renderEnvironmentTabs();renderQuickEnvironmentNav();renderEnvironment();updatePath();
+}
+function updateStats(){
+ const done=activities.filter(a=>isActivityComplete(a.activity_number)).length;
+ $("doneStat").textContent=`${done}/${activities.length}`;
+ $("attemptStat").textContent=attempts.reduce((s,a)=>s+(a.attempts_count||0),0);
+ $("catalogStat").textContent=`${currentActivity}/${activities.length}`;
+}
+function renderActivityTabs(){
+ const box=$("activityTabs");box.innerHTML="";
+ activities.forEach(a=>{
+   const n=Number(a.activity_number),done=isActivityComplete(n),unlocked=isActivityUnlocked(n);
+   const b=document.createElement("button");b.type="button";
+   b.className="activity-tab"+(n===currentActivity?" active":"")+(done?" complete":"");
+   b.disabled=!unlocked;
+   b.textContent=`${done?"✓ ":unlocked?"":"🔒 "}${n}. ${a.short_title}`;
+   b.onclick=()=>{currentActivity=n;currentEnv=null;taskIndex=0;renderAll();scrollToActivity()};
+   box.appendChild(b);
+ });
+ setTimeout(()=>{
+   const active=box.querySelector(".activity-tab.active");
+   if(active) box.scrollTo({left:Math.max(0,active.offsetLeft-box.clientWidth/2+active.clientWidth/2),behavior:"smooth"});
+ },50);
+}
+function renderActivityIntro(){
+ const a=currentActivityInfo(),all=activityTasks(),required=requiredTasks(),requiredDone=required.filter(taskDone).length,envs=activityEnvironments();
+ const complete=isActivityComplete(currentActivity);
+ const next=currentActivity+1;
+ const nextUnlocked=next<=activities.length && isActivityUnlocked(next);
+ $("activityIntro").innerHTML=`
+   <div class="activity-head">
+     <div><span class="badge">ATIVIDADE ${String(currentActivity).padStart(2,"0")} / ${activities.length}</span><h2>${a.icon||"⚽"} ${a.title}</h2><p class="muted" style="margin:0">${a.goal}</p></div>
+     <div class="activity-icon">${a.icon||"⚽"}</div>
+   </div>
+   <div class="activity-progress">
+     <span class="mini ${complete?"good":""}">${complete?"✓ Núcleo concluído":`${requiredDone}/${required.length} núcleo`}</span>
+     <span class="mini">${envs.length} ambiente${envs.length===1?"":"s"}</span>
+     <span class="mini">${all.filter(taskDone).length}/${all.length} práticas concluídas</span>
+     ${complete && nextUnlocked?`<span class="mini good">✓ Atividade ${String(next).padStart(2,"0")} liberada</span>`:""}
+     ${complete && currentActivity===activities.length?`<span class="mini good">✓ Trilha-base concluída</span>`:""}
+   </div>`;
+}
+
+function renderQuickEnvironmentNav(){
+ const box=$("quickEnvNav");
+ if(!box)return;
+ box.innerHTML="";
+ activityEnvironments().forEach(env=>{
+   const tasks=activityTasks().filter(t=>t.environment===env);
+   const done=tasks.length>0&&tasks.every(taskDone);
+   const core=tasks.some(t=>t.required_for_progress);
+   const b=document.createElement("button");
+   b.type="button";
+   b.className="quick-env-btn"+(env===currentEnv?" active":"")+(done?" done":"")+(core?" core":"");
+   b.textContent=envMeta[env].short||envMeta[env].title;
+   b.onclick=()=>{
+     currentEnv=env;
+     const pending=activityTasks().filter(t=>t.environment===env&&!taskDone(t));
+     const all=activityTasks().filter(t=>t.environment===env);
+     const target=pending[0]||all[0];
+     const arr=all.sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+     taskIndex=Math.max(0,arr.findIndex(t=>t.task_id===target?.task_id));
+     renderEnvironmentTabs();
+     renderQuickEnvironmentNav();
+     renderEnvironment();
+     updatePath();
+     scrollToBoard();
+   };
+   box.appendChild(b);
+ });
+ setTimeout(()=>{
+   const active=box.querySelector(".quick-env-btn.active");
+   if(active) box.scrollTo({left:Math.max(0,active.offsetLeft-box.clientWidth/2+active.clientWidth/2),behavior:"smooth"});
+ },30);
+}
+
+function renderEnvironmentTabs(){
+ const box=$("envTabs");box.innerHTML="";
+ activityEnvironments().forEach(env=>{
+   const tasks=activityTasks().filter(t=>t.environment===env),done=tasks.length>0&&tasks.every(taskDone),core=tasks.some(t=>t.required_for_progress);
+   const b=document.createElement("button");b.type="button";
+   b.className="env-tab"+(env===currentEnv?" active":"");
+   b.textContent=`${done?"✓ ":""}${envMeta[env].title}${core?" · núcleo":""}`;
+   b.onclick=()=>{currentEnv=env;taskIndex=0;renderEnvironmentTabs();renderQuickEnvironmentNav();renderEnvironment();updatePath();scrollToBoard()};
+   box.appendChild(b);
+ });
+}
+function renderEnvironment(){
+ if(!currentEnv){$("envIntro").innerHTML="<p class='muted'>Nenhum ambiente disponível.</p>";return}
+ const meta=envMeta[currentEnv],tasks=envTasks(),core=tasks.some(t=>t.required_for_progress);
+ $("envIntro").innerHTML=`<span class="badge ${core?"core":"transfer"}">${core?"NÚCLEO PARA AVANÇAR":"TRANSFERÊNCIA COMPLEMENTAR"}</span><p style="font-weight:850;margin:9px 0 3px">${meta.title}</p><p class="muted" style="margin:0">${meta.desc}</p>`;
+ renderTaskTabs();renderTask();updatePath();
+}
+function renderTaskTabs(){
+ const arr=envTasks(),box=$("taskTabs");box.innerHTML="";
+ box.classList.toggle("hidden",arr.length<=1);
+ arr.forEach((t,i)=>{
+   const b=document.createElement("button");b.type="button";b.className="task-tab"+(i===taskIndex?" active":"");
+   b.textContent=(taskDone(t)?"✓ ":"")+t.label;
+   b.onclick=()=>{taskIndex=i;renderTaskTabs();renderTask();updatePath()};
+   box.appendChild(b);
+ });
+}
+function typeLabel(type,cfg={}){
+ if(type==="position_sequence" && cfg.scoring_mode==="formation_lines") return "FORMAÇÃO EM LINHAS";
+ if(type==="position" && cfg.display_mode==="line_groups") return "ORGANIZAÇÃO DAS LINHAS";
+ return ({
+   position:"POSICIONAMENTO",position_sequence:"CENÁRIO EM SEQUÊNCIA",
+   choice:"DECISÃO",choice_series:"SEQUÊNCIA DE DECISÕES",
+   counter:"MISSÃO XBOX",duelcounter:"OBSERVAÇÃO XBOX",checklist:"REFLEXÃO DE CAMPO"
+ })[type]||"TAREFA";
+}
+function minAccuracy(cfg){
+ const raw=Number((cfg||{}).min_accuracy);
+ return Number.isFinite(raw)&&raw>=0&&raw<=100?raw:70;
+}
+function gateButton(btn,passed,min,label="Continuar →"){
+ if(!btn)return;
+ btn.disabled=!passed;
+ btn.textContent=passed?label:`Mínimo ${min}% para continuar`;
+}
+function renderTask(){
+ const t=currentTask();if(!t)return;
+ taskState={};
+ $("taskType").textContent=`${t.required_for_progress?"NÚCLEO · ":""}${typeLabel(t.task_type,t.config||{})}`;
+ $("taskTitle").textContent=t.title;$("taskGoal").textContent=t.goal||"";
+ $("taskIcon").textContent=t.icon||envMeta[t.environment]?.title?.split(" ")[0]||"⚽";
+ const scored=["position","position_sequence","choice","choice_series"].includes(t.task_type);
+ $("taskVersion").textContent=`R${t.revision} · dificuldade ${t.difficulty}/5${scored?` · mínimo ${minAccuracy(t.config||{})}%`:""}`;
+ if($("compactType"))$("compactType").textContent=`${t.required_for_progress?"NÚCLEO · ":""}${typeLabel(t.task_type,t.config||{})}`;
+ if($("compactVersion"))$("compactVersion").textContent=`R${t.revision}${scored?` · mínimo ${minAccuracy(t.config||{})}%`:""}`;
+ if($("compactTitle"))$("compactTitle").textContent=t.title;
+ if($("compactGoal"))$("compactGoal").textContent=t.goal||"";
+ updatePath();
+
+ const body=$("taskBody");body.innerHTML=`<div class="instruction"><strong>O que fazer</strong><br>${t.instruction||""}</div>`;
+ if(t.task_type==="position")renderPositionTask(body,t,t.config||{});
+ else if(t.task_type==="position_sequence")renderPositionSequence(body,t,t.config||{});
+ else if(t.task_type==="choice")renderChoiceTask(body,t,t.config||{});
+ else if(t.task_type==="choice_series")renderChoiceSeries(body,t,t.config||{});
+ else if(t.task_type==="counter")renderCounterTask(body,t,t.config||{});
+ else if(t.task_type==="duelcounter")renderDuelTask(body,t,t.config||{});
+ else if(t.task_type==="checklist")renderChecklistTask(body,t,t.config||{});
+ else body.insertAdjacentHTML("beforeend",`<div class="feedback err">Tipo de tarefa ainda não suportado neste motor.</div>`);
+ if(role==="parent"){
+   const tip=(t.config||{}).parent_tip||"Evite mostrar a resposta antes da tentativa. Pergunte por que ele escolheu aquela solução.";
+   body.insertAdjacentHTML("beforeend",`<div class="parent-box"><strong>Para o pai:</strong> ${tip}</div>`);
+ }
+}
+function scrollToLab(){setTimeout(()=>$("taskLab")?.scrollIntoView({behavior:"smooth",block:"start"}),30)}
+function scrollToActivity(){setTimeout(()=>$("activityIntro")?.scrollIntoView({behavior:"smooth",block:"start"}),30)}
+
+function addSvgLineGroup(layer,p,pos,selected=false,target=false){
+ const ns="http://www.w3.org/2000/svg";
+ const width=Number(p.group_width)||120;
+ const members=Math.max(1,Number(p.members)||3);
+ const cx=Number(pos.x),cy=Number(pos.y);
+ const g=document.createElementNS(ns,"g");
+ g.style.cursor=target?"default":"pointer";
+
+ const bg=document.createElementNS(ns,"rect");
+ bg.setAttribute("x",cx-width/2-10);bg.setAttribute("y",cy-22);
+ bg.setAttribute("width",width+20);bg.setAttribute("height","44");bg.setAttribute("rx","18");
+ bg.setAttribute("fill",target?"none":"rgba(53,105,189,.10)");
+ bg.setAttribute("stroke",target?"#0b6b4b":(selected?"#0b6b4b":"rgba(53,105,189,.35)"));
+ bg.setAttribute("stroke-width",target?"3":(selected?"3":"1.5"));
+ if(target)bg.setAttribute("stroke-dasharray","7 5");
+ g.appendChild(bg);
+
+ const base=document.createElementNS(ns,"line");
+ base.setAttribute("x1",cx-width/2);base.setAttribute("x2",cx+width/2);
+ base.setAttribute("y1",cy);base.setAttribute("y2",cy);
+ base.setAttribute("stroke",target?"#0b6b4b":"#3569bd");
+ base.setAttribute("stroke-width",target?"3":"4");
+ if(target)base.setAttribute("stroke-dasharray","7 5");
+ g.appendChild(base);
+
+ for(let i=0;i<members;i++){
+   const px=members===1?cx:(cx-width/2+i*(width/(members-1)));
+   const c=document.createElementNS(ns,"circle");
+   c.setAttribute("cx",px);c.setAttribute("cy",cy);c.setAttribute("r",target?"7":"9");
+   c.setAttribute("fill",target?"#edf6ef":"#3569bd");
+   c.setAttribute("stroke",target?"#0b6b4b":"#fff");
+   c.setAttribute("stroke-width",target?"2":"2");
+   g.appendChild(c);
+ }
+
+ const tx=document.createElementNS(ns,"text");
+ tx.setAttribute("x",cx);tx.setAttribute("y",cy-29);tx.setAttribute("text-anchor","middle");
+ tx.setAttribute("font-size","12");tx.setAttribute("font-weight","900");
+ tx.setAttribute("fill",target?"#0b6b4b":"#17231d");
+ tx.textContent=p.id;
+ g.appendChild(tx);
+ layer.appendChild(g);
+ return g;
+}
+function compactnessScore(cfg){
+ const ps=(cfg.players||[]).map(p=>({id:p.id,...taskState.positions[p.id]}));
+ const def=ps.find(p=>p.id==="DEF"),mei=ps.find(p=>p.id==="MEI"),ata=ps.find(p=>p.id==="ATA");
+ if(!def||!mei||!ata)return 0;
+ const targetGap=Number(cfg.compactness_target_gap)||75;
+ const gapTol=Number(cfg.compactness_gap_tolerance)||45;
+ const centerTol=Number(cfg.compactness_center_tolerance)||85;
+ const g1=Math.abs(def.y-mei.y),g2=Math.abs(mei.y-ata.y);
+ const gapScore=(Math.max(0,1-Math.abs(g1-targetGap)/gapTol)+Math.max(0,1-Math.abs(g2-targetGap)/gapTol))/2;
+ const spreadX=Math.max(def.x,mei.x,ata.x)-Math.min(def.x,mei.x,ata.x);
+ const centerScore=Math.max(0,1-spreadX/centerTol);
+ const orderScore=(def.y>mei.y && mei.y>ata.y)?1:0;
+ return Math.round(100*(.60*gapScore+.20*centerScore+.20*orderScore));
+}
+
+function formationLinesScore(cfg){
+ const players=Array.isArray(cfg.players)?cfg.players:[];
+ if(players.length<2)return 0;
+ const rows=players.map(p=>({
+   id:p.id,
+   x:Number(taskState.positions[p.id]?.x),
+   y:Number(taskState.positions[p.id]?.y),
+   tx:Number(p.tx),
+   ty:Number(p.ty)
+ }));
+ if(rows.some(r=>!Number.isFinite(r.x)||!Number.isFinite(r.y)))return 0;
+
+ // Ordem vertical: vale mais que acertar coordenadas.
+ const ordered=[...rows].sort((a,b)=>b.ty-a.ty);
+ let orderHits=0;
+ for(let i=0;i<ordered.length-1;i++){
+   if(ordered[i].y>ordered[i+1].y)orderHits++;
+ }
+ const orderScore=ordered.length>1?orderHits/(ordered.length-1):1;
+
+ // Distâncias relativas entre linhas.
+ const gapTol=Number(cfg.line_y_tolerance)||75;
+ let gapQuality=0;
+ for(let i=0;i<ordered.length-1;i++){
+   const targetGap=Math.abs(ordered[i].ty-ordered[i+1].ty);
+   const actualGap=Math.abs(ordered[i].y-ordered[i+1].y);
+   gapQuality+=Math.max(0,1-Math.abs(actualGap-targetGap)/gapTol);
+ }
+ const gapScore=ordered.length>1?gapQuality/(ordered.length-1):1;
+
+ // Altura geral, com tolerância ampla: não exige ponto exato.
+ const bandTol=Math.max(110,Number(cfg.line_y_tolerance)||75);
+ const bandScore=rows.reduce((sum,r)=>sum+Math.max(0,1-Math.abs(r.y-r.ty)/bandTol),0)/rows.length;
+
+ // As linhas podem variar lateralmente, mas devem permanecer como um time conectado.
+ const xTol=Number(cfg.line_x_tolerance)||110;
+ const spreadX=Math.max(...rows.map(r=>r.x))-Math.min(...rows.map(r=>r.x));
+ const centerScore=Math.max(0,1-spreadX/xTol);
+
+ return Math.round(100*(.30*orderScore+.35*gapScore+.20*bandScore+.15*centerScore));
+}
+
+function pitchMarkup(){
+ return `<div class="pitch-wrap"><svg id="pitch" class="pitch" viewBox="0 0 360 500" aria-label="Campo tático interativo">
+ <rect x="8" y="8" width="344" height="484" rx="14" fill="#dcefe2" stroke="#86ad93" stroke-width="2"/>
+ <line x1="8" y1="250" x2="352" y2="250" stroke="#86ad93" stroke-width="2"/>
+ <circle cx="180" cy="250" r="45" fill="none" stroke="#86ad93" stroke-width="2"/>
+ <rect x="92" y="8" width="176" height="74" fill="none" stroke="#86ad93" stroke-width="2"/>
+ <rect x="92" y="418" width="176" height="74" fill="none" stroke="#86ad93" stroke-width="2"/>
+ <g id="zonesLayer"></g><g id="fixedLayer"></g><g id="solutionLayer"></g><g id="playersLayer"></g>
+ </svg></div>`;
+}
+function initPositionState(cfg){
+ const players=Array.isArray(cfg.players)?cfg.players:[];
+ taskState.positions={};taskState.selected=null;taskState.showSolution=false;
+ players.forEach(p=>taskState.positions[p.id]={x:Number(p.x)||180,y:Number(p.y)||400});
+}
+function renderPositionTask(body,t,cfg){
+ initPositionState(cfg);
+ body.insertAdjacentHTML("beforeend",`
+ <div id="selector" class="selector"></div>${pitchMarkup()}
+ <div id="help" class="help">1. Selecione um jogador. 2. Toque no campo onde ele deve ficar.</div>
+ <div class="arrows"><button id="leftBtn">←</button><button id="upBtn">↑</button><button id="downBtn">↓</button><button id="rightBtn">→</button></div>
+ <div class="actions"><button id="checkBtn" class="btn primary">Verificar resposta</button><button id="resetBtn" class="btn secondary">Recomeçar</button></div>
+ <div id="feedback"></div>
+ <div id="after" class="after hidden"><h3>O que aprender com isso?</h3><p>${t.explanation||""}</p>
+ <div class="actions"><button id="tryAgainBtn" class="btn secondary">Tentar novamente</button><button id="nextTaskBtn" class="btn primary">Continuar →</button></div></div>`);
+ drawPosition(cfg);
+ $("leftBtn").onclick=()=>moveSelected(-10,0,cfg);$("rightBtn").onclick=()=>moveSelected(10,0,cfg);
+ $("upBtn").onclick=()=>moveSelected(0,-10,cfg);$("downBtn").onclick=()=>moveSelected(0,10,cfg);
+ $("checkBtn").onclick=()=>checkPosition(t,cfg);$("resetBtn").onclick=()=>renderTask();$("tryAgainBtn").onclick=()=>renderTask();$("nextTaskBtn").onclick=nextTask;
+}
+function drawPosition(cfg){
+ const players=Array.isArray(cfg.players)?cfg.players:[],svg=$("pitch"),selector=$("selector"),pl=$("playersLayer"),sl=$("solutionLayer"),fl=$("fixedLayer"),zl=$("zonesLayer");
+ selector.innerHTML="";pl.innerHTML="";sl.innerHTML="";fl.innerHTML="";zl.innerHTML="";
+ (cfg.zones||[]).forEach(z=>{const r=document.createElementNS("http://www.w3.org/2000/svg","rect");r.setAttribute("x",z.x);r.setAttribute("y",z.y);r.setAttribute("width",z.w);r.setAttribute("height",z.h);r.setAttribute("rx","12");r.setAttribute("fill","#55a46f");r.setAttribute("opacity",".12");zl.appendChild(r)});
+ (cfg.fixed||[]).forEach(f=>{const x=document.createElementNS("http://www.w3.org/2000/svg","text");x.setAttribute("x",f.x);x.setAttribute("y",f.y);x.setAttribute("text-anchor","middle");x.setAttribute("dominant-baseline","middle");x.setAttribute("font-size","24");x.textContent=f.label;fl.appendChild(x)});
+
+ if(taskState.showSolution){
+   players.forEach(p=>{
+     if(cfg.display_mode==="line_groups"){
+       addSvgLineGroup(sl,p,{x:p.tx,y:p.ty},false,true);
+     }else{
+       const c=document.createElementNS("http://www.w3.org/2000/svg","circle");c.setAttribute("cx",p.tx);c.setAttribute("cy",p.ty);c.setAttribute("r","26");c.setAttribute("fill","none");c.setAttribute("stroke","#0b6b4b");c.setAttribute("stroke-width","4");c.setAttribute("stroke-dasharray","7 5");sl.appendChild(c);
+       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");tx.setAttribute("x",p.tx);tx.setAttribute("y",p.ty-33);tx.setAttribute("text-anchor","middle");tx.setAttribute("font-size","11");tx.setAttribute("font-weight","800");tx.setAttribute("fill","#0b6b4b");tx.textContent=p.id;sl.appendChild(tx)
+     }
+   });
+ }
+
+ players.forEach(p=>{
+   const b=document.createElement("button");b.type="button";b.className="player-btn"+(taskState.selected===p.id?" active":"");b.textContent=p.id;
+   b.onclick=()=>{taskState.selected=p.id;taskState.showSolution=false;$("feedback").innerHTML="";hide("after");drawPosition(cfg)};selector.appendChild(b);
+   const pos=taskState.positions[p.id];
+
+   if(cfg.display_mode==="line_groups"){
+     const g=addSvgLineGroup(pl,p,pos,taskState.selected===p.id,false);
+     g.onclick=e=>{e.stopPropagation();taskState.selected=p.id;taskState.showSolution=false;$("feedback").innerHTML="";hide("after");drawPosition(cfg)};
+   }else{
+     const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+     const c=document.createElementNS("http://www.w3.org/2000/svg","circle");c.setAttribute("cx",pos.x);c.setAttribute("cy",pos.y);c.setAttribute("r","23");c.setAttribute("fill","#3569bd");c.setAttribute("stroke",taskState.selected===p.id?"#0b6b4b":"#fff");c.setAttribute("stroke-width",taskState.selected===p.id?"5":"3");
+     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");tx.setAttribute("x",pos.x);tx.setAttribute("y",pos.y+4);tx.setAttribute("text-anchor","middle");tx.setAttribute("font-size","12");tx.setAttribute("font-weight","800");tx.setAttribute("fill","#fff");tx.textContent=p.id;
+     g.appendChild(c);g.appendChild(tx);g.style.cursor="pointer";g.onclick=e=>{e.stopPropagation();taskState.selected=p.id;taskState.showSolution=false;$("feedback").innerHTML="";hide("after");drawPosition(cfg)};pl.appendChild(g);
+   }
+ });
+ $("help").textContent=taskState.selected
+   ?`${taskState.selected} selecionado. Toque no campo para mover ${cfg.display_mode==="line_groups"?"a linha como um bloco":"o jogador"}. Use as setas para ajuste fino.`
+   :`1. Selecione ${cfg.display_mode==="line_groups"?"uma linha do time":"um jogador"}. 2. Toque no campo onde ela deve ficar.`;
+ svg.onclick=e=>{if(!taskState.selected)return;const r=svg.getBoundingClientRect();const x=Math.max(28,Math.min(332,(e.clientX-r.left)*360/r.width));const y=Math.max(28,Math.min(472,(e.clientY-r.top)*500/r.height));taskState.positions[taskState.selected]={x,y};taskState.showSolution=false;$("feedback").innerHTML="";hide("after");drawPosition(cfg)};
+}
+function moveSelected(dx,dy,cfg){if(!taskState.selected)return;const p=taskState.positions[taskState.selected];p.x=Math.max(28,Math.min(332,p.x+dx));p.y=Math.max(28,Math.min(472,p.y+dy));taskState.showSolution=false;$("feedback").innerHTML="";hide("after");drawPosition(cfg)}
+async function checkPosition(t,cfg){
+ const players=Array.isArray(cfg.players)?cfg.players:[],tol=Number(cfg.tolerance)||105,pass=minAccuracy(cfg);let quality=0;
+ let score;
+ if(cfg.scoring_mode==="compactness"){
+   score=compactnessScore(cfg);
+ }else{
+   players.forEach(target=>{const p=taskState.positions[target.id],d=Math.hypot(p.x-target.tx,p.y-target.ty);quality+=Math.max(0,1-d/tol)});
+   score=players.length?Math.round(100*quality/players.length):0;
+ }
+ const passed=score>=pass;
+ taskState.showSolution=true;drawPosition(cfg);
+ let h,b;
+ if(cfg.scoring_mode==="compactness"){
+   if(score>=90){h="Excelente organização.";b="As linhas ficaram conectadas e com distâncias equilibradas."}
+   else if(score>=pass){h="Boa compactação.";b="O time está relativamente junto. Compare as distâncias entre defesa, meio e ataque com a referência."}
+   else if(score>=45){h="O time ainda pode se conectar melhor.";b="Observe principalmente os espaços entre as linhas, não os pontos exatos."}
+   else{h="O time ficou partido.";b="Aproxime defesa, meio e ataque mantendo a ordem das linhas."}
+ }else{
+   if(score>=90){h="Excelente leitura.";b="Sua solução ficou muito próxima da referência."}
+   else if(score>=pass){h="Boa ideia tática.";b="Você encontrou a organização principal."}
+   else if(score>=45){h="Você encontrou parte da solução.";b="Compare distância, largura e profundidade com o gabarito."}
+   else{h="Use o gabarito para descobrir a lógica.";b="Observe os espaços e tente novamente."}
+ }
+ $("feedback").innerHTML=`<div class="feedback ${passed?"good":"try"}"><strong>${h}</strong><br>${b}<br><br><strong>Acurácia: ${score}%</strong> · mínimo ${pass}%</div>`;show("after");
+ gateButton($("nextTaskBtn"),passed,pass);
+ await saveAttempt(t,score,passed,{positions:taskState.positions,revision:t.revision});renderTaskTabs();focusResult();
+}
+
+function renderPositionSequence(body,t,cfg){
+ const stages=Array.isArray(cfg.stages)?cfg.stages:[];
+ if(!stages.length){body.insertAdjacentHTML("beforeend",`<div class="feedback err">Cenário sem etapas configuradas.</div>`);return}
+ taskState.stage=0;taskState.stageScores=[];renderSequenceStage(body,t,cfg);
+}
+function renderSequenceStage(body,t,cfg){
+ const stages=cfg.stages,stage=stages[taskState.stage],merged={...cfg,...stage,players:stage.players||cfg.players||[],fixed:stage.fixed||[],zones:stage.zones||[]};
+ body.innerHTML=`<div class="instruction"><strong>Etapa ${taskState.stage+1} de ${stages.length}</strong><br>${stage.instruction||t.instruction||""}</div>
+ <div class="stagebar">${stages.map((_,i)=>`<span class="${i<taskState.stage?"done":i===taskState.stage?"current":""}"></span>`).join("")}</div>`;
+ initPositionState(merged);
+ body.insertAdjacentHTML("beforeend",`<div id="selector" class="selector"></div>${pitchMarkup()}<div id="help" class="help"></div>
+ <div class="arrows"><button id="leftBtn">←</button><button id="upBtn">↑</button><button id="downBtn">↓</button><button id="rightBtn">→</button></div>
+ <div class="actions"><button id="checkBtn" class="btn primary">Verificar etapa</button><button id="resetBtn" class="btn secondary">Recomeçar etapa</button></div><div id="feedback"></div><div id="after" class="after hidden"><h3>${stage.explanation?"Explicação da etapa":"O que observar"}</h3><p>${stage.explanation||t.explanation||""}</p><button id="advanceStageBtn" class="btn primary full" style="margin-top:10px">${taskState.stage===stages.length-1?"Concluir cenário":"Próxima situação →"}</button></div>`);
+ drawPosition(merged);
+ $("leftBtn").onclick=()=>moveSelected(-10,0,merged);$("rightBtn").onclick=()=>moveSelected(10,0,merged);$("upBtn").onclick=()=>moveSelected(0,-10,merged);$("downBtn").onclick=()=>moveSelected(0,10,merged);$("resetBtn").onclick=()=>renderSequenceStage(body,t,cfg);
+ $("checkBtn").onclick=async()=>{
+   const players=merged.players,tol=Number(merged.tolerance)||105,pass=minAccuracy(merged);
+   let score;
+   if(merged.scoring_mode==="formation_lines"){
+     score=formationLinesScore(merged);
+   }else if(merged.scoring_mode==="compactness"){
+     score=compactnessScore(merged);
+   }else{
+     let q=0;
+     players.forEach(target=>{
+       const p=taskState.positions[target.id],d=Math.hypot(p.x-target.tx,p.y-target.ty);
+       q+=Math.max(0,1-d/tol)
+     });
+     score=players.length?Math.round(100*q/players.length):0;
+   }
+   taskState.showSolution=true;drawPosition(merged);taskState.stageScores[taskState.stage]=score;const passed=score>=pass;
+
+   let statusText;
+   if(merged.scoring_mode==="formation_lines"){
+     statusText=passed
+       ? (taskState.stage===stages.length-1
+           ?"Formação organizada. Compare as linhas e conclua o cenário."
+           :"Formação organizada. Compare as linhas antes de avançar.")
+       :"Observe a ordem e a distância entre as linhas e tente novamente.";
+   }else{
+     statusText=taskState.stage===stages.length-1
+       ? (passed?"Etapa final aprovada. Revise o gabarito e conclua o cenário.":"Ajuste a solução e verifique novamente.")
+       : (passed?"Etapa liberada.":"Ajuste a solução e verifique novamente para avançar.");
+   }
+
+   const metricLabel=merged.scoring_mode==="formation_lines"?"Leitura da formação":"Acurácia da etapa";
+   $("feedback").innerHTML=`<div class="feedback ${passed?"good":"try"}"><strong>${metricLabel}: ${score}%</strong> · mínimo ${pass}%<br>${statusText}</div>`;
+   show("after");
+   gateButton($("advanceStageBtn"),passed,pass,taskState.stage===stages.length-1?"Concluir cenário":"Próxima situação →");
+   focusResult()
+ };
+ $("advanceStageBtn").onclick=async()=>{
+   if(taskState.stageScores[taskState.stage]===undefined)return;
+   const pass=minAccuracy(cfg);
+   if(taskState.stageScores[taskState.stage]<pass)return;
+
+   if(taskState.stage<stages.length-1){
+     taskState.stage++;
+     renderSequenceStage(body,t,cfg);
+     return;
+   }
+
+   // Etapa final: grava apenas uma vez e transforma a área final em um resumo limpo.
+   const btn=$("advanceStageBtn");
+   if(btn.disabled)return;
+   btn.disabled=true;
+   btn.textContent="Salvando…";
+
+   const avg=Math.round(taskState.stageScores.reduce((a,b)=>a+b,0)/taskState.stageScores.length);
+   const passed=avg>=pass;
+
+   await saveAttempt(t,avg,passed,{
+     stage_scores:taskState.stageScores,
+     revision:t.revision
+   });
+   renderTaskTabs();
+
+   // Mantém o gabarito e a explicação visíveis; remove o comando duplicado.
+   $("feedback").innerHTML=`<div class="feedback ${passed?"good":"try"}"><strong>Cenário concluído.</strong><br>Acurácia média: ${avg}% · mínimo ${pass}%</div>`;
+   const after=$("after");
+   if(after){
+     after.innerHTML=`
+       <h3>Explicação da etapa</h3>
+       <p>${stage.explanation||t.explanation||""}</p>
+       <button id="sequenceContinue" class="btn primary full" style="margin-top:12px">Continuar →</button>`;
+     show("after");
+   }
+   const continueBtn=$("sequenceContinue");
+   if(continueBtn) continueBtn.onclick=()=>{
+     showActivityChoices();
+     setTimeout(()=>{
+       const panel=document.querySelector(".next-panel");
+       panel?.scrollIntoView({behavior:"smooth",block:"center"});
+     },30);
+   };
+   focusResult();
+ };
+}
+
+
+function confidencePickerMarkup(){
+ return `<div class="confidence-box">
+   <div class="confidence-title">Antes de responder: como você está decidindo?</div>
+   <div class="confidence-grid">
+     <button type="button" class="confidence-btn" data-confidence="certeza">✅ Tenho certeza</button>
+     <button type="button" class="confidence-btn" data-confidence="acho">🤔 Acho que sim</button>
+     <button type="button" class="confidence-btn" data-confidence="nao_sei">❓ Ainda não sei</button>
+   </div>
+ </div>`;
+}
+function bindConfidencePicker(root,onChange){
+ root.querySelectorAll("[data-confidence]").forEach(b=>b.onclick=()=>{
+   const v=b.dataset.confidence;
+   root.querySelectorAll("[data-confidence]").forEach(x=>x.classList.toggle("active",x===b));
+   onChange(v);
+ });
+}
+function lockConfidencePicker(root){
+ root.querySelectorAll("[data-confidence]").forEach(b=>b.disabled=true);
+}
+
+function renderChoiceTask(body,t,cfg){
+ const opts=Array.isArray(cfg.options)?cfg.options:[],correct=Number(cfg.correct);
+ taskState.choice=null;
+ taskState.confidence=null;
+ body.insertAdjacentHTML("beforeend",`
+   <div class="choice-list" id="choices">${opts.map((o,i)=>`<button class="choice" data-i="${i}">${o}</button>`).join("")}</div>
+   ${confidencePickerMarkup()}
+   <button id="answerBtn" class="btn primary full" style="margin-top:10px" disabled>Escolha uma opção e sua confiança</button>
+   <div id="feedback"></div>
+   <div id="after" class="after hidden">
+     <h3>Explicação</h3><p>${t.explanation||""}</p>
+     <div class="actions"><button id="retryChoice" class="btn secondary">Tentar novamente</button><button id="nextTaskBtn" class="btn primary">Continuar →</button></div>
+   </div>`);
+
+ const updateReady=()=>{
+   const ready=taskState.choice!==null && !!taskState.confidence;
+   $("answerBtn").disabled=!ready;
+   $("answerBtn").textContent=ready?"Responder":"Escolha uma opção e sua confiança";
+ };
+ body.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{
+   if(b.disabled)return;
+   taskState.choice=+b.dataset.i;
+   body.querySelectorAll(".choice").forEach(x=>x.classList.toggle("selected",x===b));
+   updateReady();
+ });
+ bindConfidencePicker(body,v=>{taskState.confidence=v;updateReady()});
+
+ $("answerBtn").onclick=async()=>{
+   if(taskState.choice===null||!taskState.confidence)return;
+   const min=minAccuracy(cfg),score=taskState.choice===correct?100:0,ok=score>=min;
+   body.querySelectorAll(".choice").forEach((b,i)=>{
+     b.disabled=true;b.classList.remove("selected");
+     if(i===correct)b.classList.add("correct");
+     else if(i===taskState.choice)b.classList.add("wrong");
+   });
+   lockConfidencePicker(body);
+   hide("answerBtn");
+   $("feedback").innerHTML=`<div class="feedback ${ok?"good":"try"}"><strong>${ok?"Boa decisão.":"Compare com a referência e tente novamente."}</strong><br>Acurácia: ${score}% · mínimo ${min}%<br><span class="muted">Você respondeu com: ${confidenceLabel(taskState.confidence)}.</span></div>`;
+   show("after");
+   gateButton($("nextTaskBtn"),ok,min);
+   await saveAttempt(t,score,ok,{choice:taskState.choice,confidence:taskState.confidence,revision:t.revision});
+   renderTaskTabs();focusResult();
+ };
+ $("retryChoice").onclick=()=>renderTask();
+ $("nextTaskBtn").onclick=nextTask;
+}
+function renderChoiceSeries(body,t,cfg){
+ const rounds=Array.isArray(cfg.rounds)?cfg.rounds:[];if(!rounds.length){body.insertAdjacentHTML("beforeend",`<div class="feedback err">Sequência sem rodadas configuradas.</div>`);return}
+ taskState.round=0;taskState.answers=[];renderChoiceRound(body,t,cfg);
+}
+function renderChoiceRound(body,t,cfg){
+ const r=cfg.rounds[taskState.round],opts=r.options||[],correct=Number(r.correct);
+ const roundNumber=taskState.round+1,total=cfg.rounds.length;
+
+ body.innerHTML=`
+   <div class="instruction"><strong>Decisão ${roundNumber} de ${total}</strong><br>${r.instruction||""}</div>
+   <div class="stagebar">${cfg.rounds.map((_,i)=>`<span class="${i<taskState.round?"done":i===taskState.round?"current":""}"></span>`).join("")}</div>
+   <div class="choice-list" id="choices">${opts.map((o,i)=>`<button class="choice" data-i="${i}">${o}</button>`).join("")}</div>
+   ${confidencePickerMarkup()}
+   <button id="answerBtn" class="btn primary full" style="margin-top:10px" disabled>Escolha uma opção e sua confiança</button>
+   <div id="feedback"></div>`;
+
+ let chosen=null,confidence=null;
+ const optionButtons=[...body.querySelectorAll("[data-i]")];
+ const updateReady=()=>{
+   const ready=chosen!==null && !!confidence;
+   $("answerBtn").disabled=!ready;
+   $("answerBtn").textContent=ready?"Responder":"Escolha uma opção e sua confiança";
+ };
+
+ optionButtons.forEach(b=>b.onclick=()=>{
+   if(b.disabled)return;
+   chosen=+b.dataset.i;
+   optionButtons.forEach(x=>x.classList.toggle("selected",x===b));
+   updateReady();
+ });
+ bindConfidencePicker(body,v=>{confidence=v;updateReady()});
+
+ $("answerBtn").onclick=()=>{
+   if(chosen===null||!confidence)return;
+
+   const ok=chosen===correct;
+   taskState.answers.push({choice:chosen,correct:ok,confidence});
+
+   optionButtons.forEach((b,i)=>{
+     b.disabled=true;
+     b.classList.remove("selected");
+     if(i===correct)b.classList.add("correct");
+     else if(i===chosen)b.classList.add("wrong");
+   });
+   lockConfidencePicker(body);
+   hide("answerBtn");
+
+   $("feedback").innerHTML=`
+     <div class="feedback ${ok?"good":"try"}">
+       <strong>${ok?"Boa decisão.":"Compare com a referência."}</strong><br>
+       ${r.explanation||""}<br>
+       <span class="muted">Você respondeu com: ${confidenceLabel(confidence)}.</span>
+     </div>
+     <button id="nextRound" class="btn primary full" style="margin-top:10px">
+       ${taskState.round===total-1?"Concluir sequência":"Próxima decisão →"}
+     </button>`;
+
+   focusResult();
+
+   $("nextRound").onclick=async()=>{
+     if(taskState.round<total-1){
+       taskState.round++;
+       renderChoiceRound(body,t,cfg);
+       scrollToBoard();
+       return;
+     }
+
+     const hits=taskState.answers.filter(x=>x.correct).length;
+     const score=Math.round(100*hits/total);
+     const min=minAccuracy(cfg);
+     const passed=score>=min;
+
+     const btn=$("nextRound");
+     btn.disabled=true;
+     btn.textContent="Salvando…";
+
+     await saveAttempt(t,score,passed,{
+       answers:taskState.answers,
+       revision:t.revision
+     });
+     renderTaskTabs();
+
+     const confCounts={certeza:0,acho:0,nao_sei:0};
+     taskState.answers.forEach(a=>{if(a.confidence in confCounts)confCounts[a.confidence]++});
+     body.innerHTML=`
+       <div class="stagebar">${cfg.rounds.map(()=>`<span class="done"></span>`).join("")}</div>
+       <div class="feedback ${passed?"good":"try"}">
+         <strong>${passed?"Sequência concluída.":"Acurácia insuficiente para concluir."}</strong><br>
+         ${hits} de ${total} decisões · ${score}% · mínimo ${min}%
+       </div>
+       <div class="after">
+         <h3>O que aprender com isso?</h3>
+         <p>${t.explanation||"Observe o contexto antes de decidir."}</p>
+         <p class="muted" style="margin-bottom:0">Como você se sentiu: ${confCounts.certeza} certeza · ${confCounts.acho} acho que sim · ${confCounts.nao_sei} ainda não sei.</p>
+       </div>
+       ${passed
+         ? `<button id="seriesContinue" class="btn primary full" style="margin-top:12px">Continuar →</button>`
+         : `<button id="seriesRetry" class="btn secondary full" style="margin-top:12px">Tentar sequência novamente</button>`
+       }`;
+
+     if(passed){
+       $("seriesContinue").onclick=()=>{
+         showActivityChoices();
+         setTimeout(()=>document.querySelector(".next-panel")?.scrollIntoView({behavior:"smooth",block:"center"}),30);
+       };
+     }else{
+       $("seriesRetry").onclick=()=>renderTask();
+     }
+     focusResult();
+   };
+ };
+}
+
+function renderCounterTask(body,t,cfg){
+ const target=Number(cfg.target)||5;taskState.streak=0;taskState.best=0;
+ body.insertAdjacentHTML("beforeend",`<div class="counter"><div class="countbox"><strong id="streak">0</strong><span>sequência</span></div><div class="countbox"><strong id="best">0</strong><span>melhor</span></div><div class="countbox"><strong>${target}</strong><span>objetivo</span></div></div><div class="actions"><button id="okPass" class="btn primary">${cfg.success_label||"✓ Ação bem executada"}</button><button id="lost" class="btn secondary">${cfg.reset_label||"✕ Reiniciar sequência"}</button></div><div id="feedback"></div>`);
+ $("okPass").onclick=async()=>{taskState.streak++;taskState.best=Math.max(taskState.best,taskState.streak);$("streak").textContent=taskState.streak;$("best").textContent=taskState.best;if(taskState.best>=target){$("feedback").innerHTML=`<div class="feedback good"><strong>Missão atingida.</strong><br>${t.explanation||""}</div><button id="counterContinue" class="btn primary full" style="margin-top:10px">Continuar →</button>`;await saveAttempt(t,100,true,{best:taskState.best,revision:t.revision});renderTaskTabs();focusResult();$("counterContinue").onclick=nextTask}};
+ $("lost").onclick=()=>{taskState.streak=0;$("streak").textContent=0}
+}
+function renderDuelTask(body,t,cfg){
+ const target=Number(cfg.target)||6;taskState.left=0;taskState.right=0;
+ body.insertAdjacentHTML("beforeend",`<div class="counter"><div class="countbox"><strong id="leftC">0</strong><span>${cfg.left_short||"opção A"}</span></div><div class="countbox"><strong id="rightC">0</strong><span>${cfg.right_short||"opção B"}</span></div><div class="countbox"><strong id="totC">0/${target}</strong><span>eventos</span></div></div><div class="actions"><button id="leftAct" class="btn primary">${cfg.left_label||"Opção A"}</button><button id="rightAct" class="btn secondary">${cfg.right_label||"Opção B"}</button></div><div id="feedback"></div>`);
+ async function add(k){taskState[k]++;$("leftC").textContent=taskState.left;$("rightC").textContent=taskState.right;const total=taskState.left+taskState.right;$("totC").textContent=total+"/"+target;if(total>=target){$("feedback").innerHTML=`<div class="feedback good"><strong>Registro concluído.</strong><br>${t.explanation||""}</div><button id="duelContinue" class="btn primary full" style="margin-top:10px">Continuar →</button>`;await saveAttempt(t,100,true,{left:taskState.left,right:taskState.right,revision:t.revision});renderTaskTabs();focusResult();$("duelContinue").onclick=nextTask}}
+ $("leftAct").onclick=()=>add("left");$("rightAct").onclick=()=>add("right")
+}
+function renderChecklistTask(body,t,cfg){
+ const checks=Array.isArray(cfg.checks)?cfg.checks:[],passCount=Number(cfg.pass_count)||Math.max(1,Math.ceil(checks.length*2/3));taskState.checks=Array(checks.length).fill(false);
+ body.insertAdjacentHTML("beforeend",`<div class="checks">${checks.map((x,i)=>`<div class="checkrow"><input type="checkbox" id="ck${i}" data-ck="${i}"><label for="ck${i}">${x}</label></div>`).join("")}</div><button id="finishCheck" class="btn primary full" style="margin-top:10px">Concluir reflexão</button><div id="feedback"></div>`);
+ body.querySelectorAll("[data-ck]").forEach(c=>c.onchange=()=>taskState.checks[+c.dataset.ck]=c.checked);
+ $("finishCheck").onclick=async()=>{
+   const n=taskState.checks.filter(Boolean).length,score=checks.length?Math.round(100*n/checks.length):0,passed=n>=passCount;
+   $("feedback").innerHTML=`<div class="feedback ${passed?"good":"try"}"><strong>${passed?"Reflexão registrada.":"Registre mais uma evidência antes de concluir."}</strong><br>${n} de ${checks.length} itens percebidos.${passed?`<br>${t.explanation||""}`:""}</div>${passed?`<button id="checkContinue" class="btn primary full" style="margin-top:10px">Continuar →</button>`:""}`;
+   await saveAttempt(t,score,passed,{checks:taskState.checks,revision:t.revision});
+   renderTaskTabs();focusResult();
+   if(passed)$("checkContinue").onclick=nextTask;
+ }
+}
+
+function openTask(target){
+ if(!target)return;
+ currentEnv=target.environment;
+ const arr=activityTasks().filter(t=>t.environment===currentEnv).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+ taskIndex=Math.max(0,arr.findIndex(t=>t.task_id===target.task_id));
+ renderEnvironmentTabs();renderQuickEnvironmentNav();renderEnvironment();updatePath();scrollToBoard();
+}
+
+function showActivityChoices(){
+ const body=$("taskBody"),a=currentActivityInfo();
+ const optionalByEnv=activityEnvironments().map(env=>({
+   env,
+   tasks:activityTasks().filter(t=>t.environment===env && !t.required_for_progress)
+ })).filter(x=>x.tasks.length>0);
+ const next=currentActivity+1,nextUnlocked=next<=activities.length&&isActivityUnlocked(next);
+ const optionalHtml=optionalByEnv.map(x=>{
+   const meta=envMeta[x.env],done=x.tasks.every(taskDone),pending=x.tasks.filter(t=>!taskDone(t)).length;
+   return `<button class="next-choice" data-open-env="${x.env}">
+     <strong>${done?"✓ ":""}${meta.title}</strong>
+     <span>${done?"Prática complementar concluída":`${pending} prática${pending===1?"":"s"} complementar${pending===1?"":"es"} disponível${pending===1?"":"eis"}`}</span>
+   </button>`;
+ }).join("");
+
+ const nextHtml=nextUnlocked
+   ? `<button class="next-choice primary-choice" id="goNextActivity"><strong>➡️ Ir para Atividade ${String(next).padStart(2,"0")}</strong><span>${activities.find(x=>Number(x.activity_number)===next)?.title||"Próximo conceito"}</span></button>`
+   : currentActivity===activities.length && isActivityComplete(currentActivity)
+     ? `<button class="next-choice primary-choice" id="reviewTrail"><strong>🏁 Trilha-base concluída</strong><span>Rever as atividades ou praticar ambientes complementares.</span></button>`
+     : "";
+
+ body.innerHTML=`
+   <div class="next-panel">
+     <h3>✓ Núcleo da Atividade ${String(currentActivity).padStart(2,"0")} concluído</h3>
+     <p>Você já pode avançar. Os outros ambientes servem para praticar o mesmo conceito de formas diferentes e são opcionais.</p>
+     <div class="next-grid">
+       ${optionalHtml}
+       ${nextHtml}
+       <button class="next-choice" id="reviewCore"><strong>↻ Rever o núcleo</strong><span>Voltar ao exercício principal desta atividade.</span></button>
+     </div>
+   </div>`;
+
+ body.querySelectorAll("[data-open-env]").forEach(b=>b.onclick=()=>{
+   const env=b.dataset.openEnv;
+   const pending=activityTasks().filter(t=>t.environment===env&&!t.required_for_progress&&!taskDone(t));
+   const any=activityTasks().filter(t=>t.environment===env&&!t.required_for_progress);
+   openTask((pending[0]||any[0]));
+   renderQuickEnvironmentNav();
+ });
+ if($("goNextActivity"))$("goNextActivity").onclick=()=>{
+   currentActivity=next;currentEnv=null;taskIndex=0;renderAll();scrollToActivity();
+ };
+ if($("reviewTrail"))$("reviewTrail").onclick=()=>{currentActivity=1;currentEnv=null;taskIndex=0;renderAll();scrollToActivity()};
+ $("reviewCore").onclick=()=>{
+   const core=requiredTasks(currentActivity);
+   openTask(core[0]);
+ };
+}
+
+function nextTask(){
+ const t=currentTask();
+ if(!t){scrollToActivity();return}
+
+ if(t.required_for_progress){
+   const pendingRequired=requiredTasks(currentActivity).filter(x=>!taskDone(x));
+   if(pendingRequired.length){
+     openTask(pendingRequired[0]);
+     return;
+   }
+   if(isActivityComplete(currentActivity)){
+     showActivityChoices();
+     return;
+   }
+ }
+
+ if(!t.required_for_progress){
+   showActivityChoices();
+   return;
+ }
+
+ const arr=envTasks();
+ if(taskIndex<arr.length-1){
+   taskIndex++;renderTaskTabs();renderTask();scrollToLab();return;
+ }
+ showActivityChoices();
+}
+
+async function saveAttempt(t,score,completed,answer){
+ if(role!=="child") return;
+ const safeScore=(score===undefined||score===null)?null:Math.max(0,Math.min(100,Math.round(Number(score))));
+ const {error}=await sb.rpc("record_task_attempt",{
+   p_player_id:player.id,
+   p_task_id:t.task_id,
+   p_score:safeScore,
+   p_completed:!!completed,
+   p_answer:answer||{}
+ });
+ if(error){console.error("Falha ao registrar tentativa:",error);return}
+ await refreshAttempts();
+ updateStats();
+ renderActivityIntro();
+ renderQuickEnvironmentNav();
+ updatePath();
+}
+
+sb.auth.getSession().then(async({data})=>{
+ if(data.session){session=data.session;await loadHub()}
+ else{const token=new URLSearchParams(location.search).get("invite");if(token){setAuthMode("child");$("inviteToken").value=token}}
+});
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>{}))}
+
+
+</script>
+
+</body>
+</html>
